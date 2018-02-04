@@ -1,0 +1,27 @@
+{
+  "name": "puhlubackend",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "watch": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BikkuMyy/fswd-osa3.git"
+  },
+  "author": "Mari Trtnik",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BikkuMyy/fswd-osa3/issues"
+  },
+  "homepage": "https://github.com/BikkuMyy/fswd-osa3#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.14.12"
+  }
+}
