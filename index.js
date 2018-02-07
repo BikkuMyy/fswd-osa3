@@ -1,8 +1,12 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const morgan = require('morgan')
+const cors = require('cors')
 
 app.use(bodyParser.json())
+app.use(morgan('tiny'))
+app.use(cors())
 
 let persons = [
     {
@@ -64,9 +68,9 @@ app.delete('/api/persons/:id', (req, res) => {
 nameExists = ({ name }) => {
     const person = persons.find(p => p.name === name)
     if (person === undefined) {
-        return true
+        return false
     }
-    return false
+    return true
 }
 
 generateId = () => {
@@ -87,12 +91,12 @@ app.post('/api/persons', (req, res) => {
         number: body.number,
         id: generateId()
     }
-
+    console.log(body)
     persons = persons.concat(person)
     res.json(person)
 })
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })

@@ -19,7 +19,9 @@
   },
   "homepage": "https://github.com/BikkuMyy/fswd-osa3#readme",
   "dependencies": {
-    "express": "^4.16.2"
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "morgan": "^1.9.0"
   },
   "devDependencies": {
     "nodemon": "^1.14.12"
