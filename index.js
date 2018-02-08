@@ -7,6 +7,7 @@ const cors = require('cors')
 app.use(bodyParser.json())
 app.use(morgan('tiny'))
 app.use(cors())
+app.use(express.static('build'))
 
 let persons = [
     {
@@ -32,7 +33,7 @@ let persons = [
 ]
 
 app.get('/', (req, res) => {
-    res.send('<h2>Nothing to see here ;)<h2/>')
+    res.send('index.html')
 })
 
 app.get('/api/persons', (req, res) => {
@@ -80,7 +81,7 @@ generateId = () => {
 app.post('/api/persons', (req, res) => {
     const body = req.body
 
-    if (body.name === undefined || body.number === undefined) {
+    if (body.name === '' || body.number === '') {
         return res.status(400).json({ error: 'name or number missing' })
     } else if (nameExists(body.name)) {
         return res.status(400).json({ error: 'name should be unique' })
