@@ -1,0 +1,7 @@
+PUT http://localhost:3001/api/persons/5a7cbc42087b56283aed133f
+content-type: application/json
+
+{
+    "name": "Test Ikonen",
+    "number": "0400123456"
+}

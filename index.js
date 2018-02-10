@@ -3,6 +3,7 @@ const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/person.js')
 
 app.use(bodyParser.json())
 app.use(morgan('tiny'))
@@ -33,37 +34,57 @@ let persons = [
 ]
 
 app.get('/', (req, res) => {
+
     res.send('index.html')
 })
 
 app.get('/api/persons', (req, res) => {
-    res.json(persons)
+    Person
+        .find({})
+        .then(persons => {
+            res.json(persons.map(Person.format))
+        })
 })
 
 app.get('/info', (req, res) => {
     const date = new Date()
-    res.send(
-        `<div>Puhelinluettelossa ${persons.length} henkilön tiedot<div>
+
+    Person.count({}, function (err, count) {
+        res.send(
+            `<div>Puhelinluettelossa ${count} henkilön tiedot<div>
         <div>${date}</div>`
-    )
+        )
+    })
 })
 
 app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const person = persons.find(p => p.id === id)
 
-    if (person) {
-        res.json(person)
-    } else {
-        res.status(404).end()
-    }
+    Person
+        .findById(req.params.id)
+        .then(person => {
+            if (person) {
+                res.json(Person.format(person))
+            } else {
+                res.status(404).end()
+            }
+        })
+        .catch(error => {
+            console.log(error)
+            res.status(404).send({ error: 'malformatted id' })
+        })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    persons = persons.filter(n => n.id !== id)
 
-    res.status(204).end()
+    Person
+        .findByIdAndRemove(req.params.id)
+        .then(result => {
+            res.status(204).end()
+        })
+        .catch(error => {
+            console.log(error)
+            res.status(400).send({ error: 'malformatted id' })
+        })
 })
 
 nameExists = ({ name }) => {
@@ -87,14 +108,38 @@ app.post('/api/persons', (req, res) => {
         return res.status(400).json({ error: 'name should be unique' })
     }
 
-    const person = {
+    const person = new Person({
         name: body.name,
         number: body.number,
         id: generateId()
-    }
+    })
+
     console.log(body)
-    persons = persons.concat(person)
-    res.json(person)
+
+    person
+        .save()
+        .then(savedPerson => {
+            res.json(Person.format(savedPerson))
+        })
+})
+
+app.put('/api/persons/:id', (req, res) => {
+    const body = req.body
+
+    const person = {
+        name: body.name,
+        number: body.number
+    }
+
+    Person
+        .findByIdAndUpdate(req.params.id, person, { new: true })
+        .then(updatedPerson => {
+            res.json(Person.format(updatedPerson))
+        })
+        .catch(error => {
+            console.log(error)
+            res.status(400).send({ error: 'malformatted id' })
+        })
 })
 
 const PORT = process.env.PORT || 3001
