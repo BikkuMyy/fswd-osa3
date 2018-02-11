@@ -1,13 +1,6 @@
 const mongoose = require('mongoose')
 
-const url = 'mongodb://mari:ftrsprcdr@ds229438.mlab.com:29438/fs-persons'
-
-mongoose.connect(url)
-
-const personSchema = new mongoose.Schema({
-    name: String,
-    number: String
-})
+const url = process.env.MONGODB_URI
 
 personSchema.statics.format = function(person) {
     return {
